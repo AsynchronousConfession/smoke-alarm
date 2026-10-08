@@ -353,7 +353,7 @@ GATT 沿用沁恒 SimpleProfile（服务 `0xFFE0`）：
 ```
 .
 ├─ README.md                     ← 本文件（项目说明）
-├─ LICENSE                       ← 建议补上（见"许可"）
+├─ LICENSE                       ← MIT 许可（只覆盖作者自写的部分，见"许可"）
 ├─ .gitignore                    ← 排除 build/ managed_components/ .venv/ data/ logs/
 ├─ docs\                         ← 设计文档
 │   ├─ 01_系统架构与组网方式.md
@@ -485,10 +485,16 @@ R0    = 清洁空气下测得的 Rs（控制页一键标定，按 MAC 存进 NVS
 | Mosquitto | MQTT Broker | EPL-2.0 / EDL |
 | paho-mqtt | 后端 MQTT 客户端 | EPL-2.0 / EDL |
 
-**本工程自有代码**（节点 `APP/`、`gateway_esp32s3/main`、`cyd_gateway/main`、`server/`、`tools/`、`deploy/`）
-建议采用 **MIT** 许可。
+**本工程自有代码**（节点 `APP/`、`gateway_esp32s3/main`、`cyd_gateway/main`、`server/`、
+`tools/`、`deploy/`、`docs/`）采用 **MIT 许可**，全文见仓库根目录的 [LICENSE](LICENSE)。
 
-> ⚠️ 正式开源前请**确认许可类型**并补一份 `LICENSE` 到仓库根目录。
+> ⚠️ **许可范围说明**：`LICENSE` 只覆盖作者自己编写的代码。
+> `node_ch573f` 中的沁恒 SDK（`SRC/`、`node/LIB/`、`node/HAL/`）版权归沁恒所有，
+> `LVGL`、`ECharts`、`Mosquitto`、`paho-mqtt` 等第三方组件各自遵循其原许可，
+> 均**不在本 MIT 许可范围内**，也不应被重新授权或售卖。
+>
+> 本工程涉及燃气与烟雾报警，属于安全相关应用。MIT 许可含有"不提供任何担保"条款：
+> 作者不对使用本工程造成的任何后果承担责任。**请勿把本项目当作通过认证的安防产品使用。**
 
 **个人信息清理情况**（发布前已做过一轮全仓库扫描）：服务器公网 IP、访问域名、网页口令、
 MQTT 账号口令、Cloudflare 隧道 token、家庭 WiFi 的 SSID/密码、示例 MAC、本机用户名与绝对路径
