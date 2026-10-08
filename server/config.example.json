@@ -1,0 +1,45 @@
+{
+  "_说明": "配置示例。复制成 config.json 再改。config.json 已被 .gitignore 排除（含口令与隧道 token）。",
+
+  "gateway_id": "gw01",
+
+  "web": {
+    "host": "0.0.0.0",
+    "port": 3000,
+    "access_password": "改成你自己的网页访问口令"
+  },
+
+  "mqtt": {
+    "host": "127.0.0.1",
+    "port": 1883,
+    "backend_user": "backend",
+    "backend_password": "改成你自己的后端口令",
+    "device_user": "esp32gw",
+    "device_password": "改成你自己的设备口令"
+  },
+
+  "cloudflare": {
+    "_说明": "可选。需要外网 HTTPS 访问时，填 Cloudflare 隧道的 token（cloudflared tunnel token）。不用就留空。",
+    "tunnel_token": ""
+  },
+
+  "devices": {
+    "_说明": "节点标签按接入顺序自动分配（A、B、C、D…）。节点的 NODE_TAG 会一起显示在卡片上。",
+    "labels": ["A", "B", "C", "D", "E", "F"]
+  },
+
+  "cmd_presets": [
+    { "label": "消音 60s", "text": "M" },
+    { "label": "自检", "text": "T" },
+    { "label": "复位", "text": "R" }
+  ],
+
+  "limits": {
+    "max_cmd_len": 20,
+    "keep_days": 30,
+    "tele_keep_days": 7,
+    "tele_store_sec": 2,
+    "offline_timeout_sec": 90,
+    "series_max_points": 1500
+  }
+}

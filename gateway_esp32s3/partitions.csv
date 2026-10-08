@@ -1,0 +1,9 @@
+# ESP32-S3, 16MB flash, gateway runs BLE + WiFi + MQTT (app is about 1.3MB)
+# NOTE: keep this file ASCII-only. The partition tool reads it with the system
+#       locale (GBK on Chinese Windows); non-ASCII bytes break the app offset
+#       lookup and idf.py flash then fails with "Address must be a number".
+#
+# Name,     Type, SubType, Offset,   Size,     Flags
+nvs,        data, nvs,     0x9000,   0x6000,
+phy_init,   data, phy,     0xf000,   0x1000,
+factory,    app,  factory, 0x10000,  0x300000,

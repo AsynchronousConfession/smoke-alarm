@@ -1,0 +1,27 @@
+# NOTE: keep this file ASCII-only, kconfgen reads it with the system locale
+#       (GBK on Chinese Windows) and non-ASCII bytes break the build.
+
+# Target chip
+CONFIG_IDF_TARGET="esp32s3"
+
+# 16MB flash + 3MB app partition (BLE + WiFi + MQTT needs more than 1MB)
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# Bluetooth: Bluedroid stack, BLE 4.2 only
+CONFIG_BT_ENABLED=y
+CONFIG_BT_BLE_42_FEATURES_SUPPORTED=y
+CONFIG_BT_BLE_50_FEATURES_SUPPORTED=n
+CONFIG_BT_BLE_50_FEATURE_SUPPORT=n
+
+# 同时连接的节点数 + 1 条备用链路（app_config.h 的 APP_MAX_NODES = 4）
+CONFIG_BT_ACL_CONNECTIONS=5
+# Enough room to cache the characteristics of every connected slave
+CONFIG_BT_GATTC_MAX_CACHE_CHAR=48
+
+# WiFi + BLE run at the same time on the gateway: let software arbitrate the radio
+CONFIG_ESP_COEX_SW_COEXIST_ENABLE=y
+
+# Logging
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y

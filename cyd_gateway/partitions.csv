@@ -1,0 +1,10 @@
+# CYD: 4MB flash. app 3MB (gateway now ~1.3MB, phase 2 adds LVGL + CJK font)
+#
+# NOTE: keep this file ASCII-only. The partition tool reads it with the system
+#       locale (GBK on Chinese Windows) and non-ASCII bytes break the build.
+#
+# Name,     Type, SubType, Offset,   Size,     Flags
+nvs,        data, nvs,     0x9000,   0x6000,
+phy_init,   data, phy,     0xf000,   0x1000,
+factory,    app,  factory, 0x10000,  0x300000,
+storage,    data, spiffs,  0x310000, 0xf0000,

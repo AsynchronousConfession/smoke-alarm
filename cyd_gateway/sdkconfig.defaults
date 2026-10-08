@@ -1,0 +1,49 @@
+# NOTE: keep this file ASCII-only (kconfgen reads it with the system locale,
+#       GBK on Chinese Windows; non-ASCII bytes break the build).
+
+# ---- Target: classic ESP32 (CYD), NOT esp32s3 ----
+CONFIG_IDF_TARGET="esp32"
+
+# ---- 4MB flash, DIO 40MHz (same as the working CYD display project) ----
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_ESPTOOLPY_FLASHMODE_DIO=y
+CONFIG_ESPTOOLPY_FLASHFREQ_40M=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# ---- Bluetooth: Bluedroid host, BLE used only ----
+# classic BT memory is released at runtime by gateway_main.c
+# (esp_bt_controller_mem_release(ESP_BT_MODE_CLASSIC_BT))
+CONFIG_BT_ENABLED=y
+CONFIG_BT_BLUEDROID_ENABLED=y
+CONFIG_BT_BLE_ENABLED=y
+CONFIG_BT_SMP_ENABLE=y
+
+# ---- 4 nodes + 1 spare link (APP_MAX_NODES = 4 in app_config.h) ----
+CONFIG_BT_ACL_CONNECTIONS=5
+CONFIG_BT_GATTC_MAX_CACHE_CHAR=48
+
+# ---- WiFi + BLE at the same time: software coexistence ----
+CONFIG_ESP_COEX_SW_COEXIST_ENABLE=y
+
+# Classic ESP32 上 WiFi + BLE + LVGL 同时用会把 IRAM 挤爆
+# （链接报 iram0_0_seg overflowed）。关掉 WiFi 的 IRAM 优化换回几 KB IRAM；
+# 本工程每 2 秒才几十字节数据，性能影响可以忽略。
+CONFIG_ESP_WIFI_IRAM_OPT=n
+CONFIG_ESP_WIFI_RX_IRAM_OPT=n
+
+# ---- Logging ----
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+
+# ---- LVGL / 屏幕（参数与已实机调通的 esp32_cyd_lvgl 工程一致）----
+CONFIG_FREERTOS_HZ=1000
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=4096
+CONFIG_LV_COLOR_DEPTH_16=y
+CONFIG_LV_COLOR_16_SWAP=y
+CONFIG_LV_MEM_CUSTOM=y
+CONFIG_LV_FONT_MONTSERRAT_14=y
+CONFIG_LV_FONT_MONTSERRAT_16=y
+CONFIG_LV_FONT_MONTSERRAT_20=y
+# built-in simsun covers only 146 hanzi, we ship our own bitmap font
+# CONFIG_LV_FONT_SIMSUN_16_CJK is not set
+CONFIG_LV_USE_PERF_MONITOR=y

@@ -1,0 +1,67 @@
+# ============================================================
+#  .gitignore —— 家庭室内多节点烟雾报警系统
+#  目标：仓库里只留"人写的代码"，构建产物、依赖、数据库、密钥全部排除
+# ============================================================
+
+# ---------- 敏感信息（公开仓库必须排除）----------
+# 说明：仓库里的 server/config.json 是**占位符版本**（口令/域名都替换过），要纳入版本控制，
+#       这样别人克隆下来能直接跑/部署；你的真实配置放在 config.local.json，只排除它。
+server/config.local.json
+server/mosquitto/passwd
+server/mosquitto/acl
+server/mosquitto/mosquitto.conf
+server/runtime.json
+deploy/smoke_server_deploy.tar.gz
+
+# ---------- ESP-IDF（网关 A / 网关 B）----------
+build/
+managed_components/
+sdkconfig
+sdkconfig.old
+dependencies.lock
+*.bin
+*.elf
+*.map
+
+# 但保留发布用的固件
+!deploy/fw/*.hex
+
+# ---------- MounRiver / CH573 节点 ----------
+node_ch573f/build/
+node_ch573f/**/build/
+node_ch573f/**/obj/
+node_ch573f/**/Debug/
+node_ch573f/**/Release/
+*.o
+*.d
+*.su
+*.lst
+*.mrs
+.metadata/
+
+# ---------- 服务器运行时 ----------
+server/.venv/
+server/logs/
+server/data/
+server/__pycache__/
+**/__pycache__/
+*.pyc
+
+# Mosquitto 的本地数据与日志（每台机器自己生成）
+server/mosquitto/data/
+server/mosquitto/logs/
+*.log
+*.db
+*.db-wal
+*.db-shm
+
+# 体积很大的第三方安装包/轮子（自行下载）
+server/tools/*.exe
+server/tools/*.whl
+
+# ---------- 编辑器 / 系统 ----------
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+Desktop.ini

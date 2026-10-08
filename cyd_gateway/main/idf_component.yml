@@ -1,0 +1,10 @@
+## 依赖由 ESP-IDF 组件管理器自动下载到工程根目录的 managed_components/
+## 说明：esp_lvgl_port 2.x 要求 ESP-IDF >= 5.2，本机当前是 5.1.2，故锁定 1.4.0 + LVGL 8.4
+dependencies:
+  idf: ">=5.1"
+  lvgl/lvgl: "^8.4.0"
+  espressif/esp_lvgl_port: "~1.4.0"
+  espressif/esp_lcd_ili9341: "^1.2.0"
+  espressif/esp_lcd_touch: "^1.1.0"
+  # XPT2046 驱动在 1.x 之后从 esp_lcd_touch 核心组件里拆了出来（就是 esp-bsp 里那份）
+  atanisoft/esp_lcd_touch_xpt2046: "^1.0.6"

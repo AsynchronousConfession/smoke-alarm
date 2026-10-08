@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2f7fd">
+<title>家庭室内多节点烟雾报警系统</title>
+<!-- 注意：文件名后面带 ?v= 版本号，改样式/脚本后把版本号 +1。
+     这是为了绕开 Cloudflare 边缘对 css/js 的缓存（否则会出现
+     "域名访问是旧界面、IP 直连是新界面"的怪现象）。 -->
+<link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+
+<!-- ===================== 登录 ===================== -->
+<div id="login" class="login">
+  <div class="login-box">
+    <div class="login-mark">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+        <path d="M12 2c.6 3.2-1.2 4.6-2.6 6.1C7.9 9.7 6.5 11.3 6.5 14a5.5 5.5 0 0 0 11 0c0-1.7-.7-3.2-1.8-4.4-.4.9-1.1 1.5-2.1 1.7.6-2.9.2-6.2-1.6-9.3Z"/>
+      </svg>
+    </div>
+    <h1>家庭室内多节点烟雾报警系统</h1>
+    <p class="sub">CH573F 多节点 · ESP32-S3 网关 · 云端监测大屏</p>
+    <input id="pass" type="password" placeholder="访问口令" autocomplete="current-password">
+    <button id="login-btn">进入监测大屏</button>
+    <p id="login-msg" class="msg"></p>
+  </div>
+</div>
+
+<!-- ===================== 大屏 ===================== -->
+<div id="app" class="hidden">
+
+  <div id="alarm-banner" class="alarm-banner hidden">
+    <span class="siren">⚠</span>
+    <div class="alarm-body">
+      <b>烟雾 / 可燃气异常</b>
+      <span id="alarm-text">检测到异常</span>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <path d="M12 2c.6 3.2-1.2 4.6-2.6 6.1C7.9 9.7 6.5 11.3 6.5 14a5.5 5.5 0 0 0 11 0c0-1.7-.7-3.2-1.8-4.4-.4.9-1.1 1.5-2.1 1.7.6-2.9.2-6.2-1.6-9.3Z"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>家庭烟雾报警系统</h1>
+        <p>多节点 BLE 采集 · MQTT 上云 · 实时告警</p>
+      </div>
+    </div>
+    <div class="gw-status">
+      <span class="dot" id="gw-dot"></span>
+      <span class="gw-info" id="gw-info">网关状态加载中…</span>
+    </div>
+  </header>
+
+  <section class="stats">
+    <div class="stat">
+      <span class="k">在线节点</span>
+      <b class="v" id="stat-online">—</b>
+    </div>
+    <div class="stat">
+      <span class="k">当前状态</span>
+      <b class="v" id="stat-state">—</b>
+    </div>
+    <div class="stat">
+      <span class="k">网关地址</span>
+      <b class="v mono" id="stat-ip">—</b>
+    </div>
+    <div class="stat">
+      <span class="k">WiFi 信号</span>
+      <b class="v" id="stat-wifi">—</b>
+    </div>
+    <div class="stat">
+      <span class="k">累计报警</span>
+      <b class="v" id="stat-alarm">—</b>
+    </div>
+  </section>
+
+  <section class="cards" id="cards"></section>
+
+  <div class="grid-2">
+    <section class="panel">
+      <div class="panel-hd">
+        <h2>Δ% 变化曲线</h2>
+        <div class="hd-tools">
+          <div class="dev-pick" id="chart-pick"></div>
+          <select id="chart-hours">
+            <option value="0.17">近 10 分钟</option>
+            <option value="0.5" selected>近 30 分钟</option>
+            <option value="1">近 1 小时</option>
+            <option value="3">近 3 小时</option>
+            <option value="12">近 12 小时</option>
+            <option value="24">近 24 小时</option>
+          </select>
+          <span class="hd-note" id="series-note">● 每 2 秒刷新</span>
+        </div>
+      </div>
+      <p class="panel-desc">相对自适应基线的变化率，<b>负值</b> = 传感器电阻变小 = 闻到烟雾/可燃气；红点为报警时刻</p>
+      <div id="chart-dpct" class="chart"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-hd">
+        <h2>报警次数统计</h2>
+        <span class="hd-note">近 24 小时</span>
+      </div>
+      <p class="panel-desc">按小时汇总各节点报警次数，可看出哪个房间异常更频繁</p>
+      <div id="chart-alarm" class="chart"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="panel-hd">
+      <h2>下发指令</h2>
+      <span class="hd-note">网页 → MQTT → 网关 → BLE → 节点</span>
+    </div>
+    <div class="ctrl">
+      <div class="dev-pick" id="dev-pick"></div>
+      <div class="presets" id="cmd-presets"></div>
+      <input id="cmd-text" maxlength="20" placeholder="自定义文本（最多 20 个 ASCII 字符）">
+      <button id="cmd-send">发送</button>
+    </div>
+    <p class="hint">
+      <code>M</code> 消音 60 秒（<code>M30</code> = 30 秒） ·
+      <code>T</code> 蜂鸣器自检 ·
+      <code>R</code> 清除报警锁存 ·
+      其它文字只写进节点串口日志（节点没有屏幕）
+    </p>
+    <p id="cmd-msg" class="msg"></p>
+  </section>
+
+  <section class="panel">
+    <div class="panel-hd">
+      <h2>实时事件流</h2>
+      <span class="live">● 实时推送</span>
+    </div>
+    <div id="feed" class="feed"></div>
+  </section>
+
+  <footer>
+    <span id="footer-topic"></span>
+    <button id="logout" class="link">退出登录</button>
+  </footer>
+</div>
+
+<script src="vendor/echarts.min.js?v=1"></script>
+<script src="app.js?v=5"></script>
+</body>
+</html>

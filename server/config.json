@@ -1,0 +1,37 @@
+{
+  "_说明": "本文件是整条链路唯一的配置文件。改完重启 start.ps1 生效。",
+  "gateway_id": "gw01",
+  "web": {
+    "host": "0.0.0.0",
+    "port": 3000,
+    "access_password": "CHANGE_ME_WEB_PW"
+  },
+  "mqtt": {
+    "host": "127.0.0.1",
+    "port": 1883,
+    "backend_user": "backend",
+    "backend_password": "CHANGE_ME_BACKEND_PW",
+    "device_user": "esp32gw",
+    "device_password": "CHANGE_ME_DEVICE_PW"
+  },
+  "cloudflare": {
+    "_说明": "手机在外网访问用的隧道 token。同一台电脑上不要同时跑两个用同一 token 的 start.ps1。",
+    "tunnel_token": ""
+  },
+  "devices": {
+    "_说明": "节点标签按接入顺序自动分配（A、B、C、D…）。节点的 NODE_TAG 会一起显示在卡片上。",
+    "labels": ["A", "B", "C", "D", "E", "F"]
+  },
+  "cmd_presets": [
+    { "label": "消音 60s", "text": "M" },
+    { "label": "自检", "text": "T" },
+    { "label": "复位", "text": "R" }
+  ],
+  "limits": {
+    "max_cmd_len": 20,
+    "keep_days": 30,
+    "tele_keep_days": 7,
+    "tele_store_sec": 2,
+    "offline_timeout_sec": 90
+  }
+}
